@@ -1,0 +1,22 @@
+{
+  "name": "ฉันจะซื้อหวยทุกงวด",
+  "short_name": "หวยทุกงวด",
+  "description": "แอปปั่นเลข ตรวจผล เซียมซี และขูดต้นมะขามแบบกวน ๆ",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#fff8ec",
+  "theme_color": "#9f2d22",
+  "lang": "th",
+  "icons": [
+    {
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

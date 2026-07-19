@@ -1,0 +1,11 @@
+{
+  "name": "chan-ja-sue-huay-thuk-nguat",
+  "version": "1.4.3",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "dev": "node server.mjs",
+    "test": "node tests/run-tests.mjs && node tests/server-smoke.mjs"
+  }
+}
