@@ -15,7 +15,7 @@ function rawRequest(path,{method='GET',body=null,headers={}}={}){
 }
 try{
   for(let i=0;i<30;i++){try{const r=await rawRequest('/');if(r.status===200)break;}catch{}await sleep(100);}
-  const index=await rawRequest('/');assert.equal(index.status,200);assert.match(index.headers['content-type'],/text\/html/);assert.equal(index.headers['cache-control'],'no-cache');assert.match(index.body,/appVersion">1\.5\.0/);
+  const index=await rawRequest('/');assert.equal(index.status,200);assert.match(index.headers['content-type'],/text\/html/);assert.equal(index.headers['cache-control'],'no-cache');assert.match(index.body,/appVersion">1\.5\.1/);
   const data=await rawRequest('/data/lottery.json');assert.equal(data.status,200);assert.match(data.headers['content-type'],/application\/json/);assert.equal(data.headers['cache-control'],'public,max-age=3600');
   const traversal=await rawRequest('/..%2f..%2fetc%2fpasswd');assert.equal(traversal.status,404);
   const invalid=await rawRequest('/api/check',{method:'POST',body:'{}',headers:{'Content-Type':'application/json','Content-Length':'2'}});assert.equal(invalid.status,400);assert.match(invalid.body,/Invalid lottery check payload/);

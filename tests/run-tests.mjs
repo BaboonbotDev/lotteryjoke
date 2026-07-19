@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {
   normalizeApiLatest,normalizeApiDraw,normalizeApiCheck,toIsoDate,
-  checkAgainstDraw,predictionHistory,secureInt,__setTestState
+  checkAgainstDraw,predictionHistory,secureInt,fortuneTwoDigit,__setTestState
 } from '../app.js';
 
 
@@ -71,6 +71,14 @@ __setTestState(history,null);
 assert.deepEqual(predictionHistory('2024-01-16').map(x=>x.date),['2024-01-01']);
 assert.deepEqual(predictionHistory('2024-02-01').map(x=>x.date),['2024-01-01','2024-01-16']);
 assert.equal(predictionHistory('2025-01-01').length,3);
+
+// Regression: blend mode with no prior history must never return undefined
+__setTestState([],null);
+for(let i=0;i<300;i++){
+  const n=fortuneTwoDigit('1990-01-01','blend');
+  assert.match(n,/^\d{2}$/,'fortuneTwoDigit blend must return a 2-digit string even with empty history');
+}
+__setTestState(history,null);
 
 const lottery=JSON.parse(fs.readFileSync(new URL('../data/lottery.json',import.meta.url),'utf8'));
 assert.equal(lottery.length,716);

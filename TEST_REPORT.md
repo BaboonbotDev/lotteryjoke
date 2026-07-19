@@ -1,4 +1,6 @@
-# Test Report — v1.5.0
+# Test Report (อัปเดต v1.5.1: เพิ่ม regression test สำหรับ fortuneTwoDigit โหมด blend กับประวัติว่าง — ผ่าน)
+
+# Test Report เดิม — v1.5.0
 
 วันที่ทดสอบ: 19 กรกฎาคม 2569
 

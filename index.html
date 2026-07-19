@@ -80,7 +80,7 @@
         <div class="content-stack">
           <section class="card filter-card">
             <label>งวดที่อยากลุ้น
-              <input type="date" id="predictDate" />
+              <input type="date" id="predictDate" min="1996-07-17" />
             </label>
             <label>สไตล์การปั่น
               <select id="modelMode">
@@ -117,7 +117,7 @@
               <input id="ticketNumber" inputmode="numeric" maxlength="6" placeholder="เช่น 123456" />
             </label>
             <label>งวดวันที่
-              <input type="date" id="checkDate" />
+              <input type="date" id="checkDate" min="1996-07-16" />
             </label>
             <button class="primary-btn teal-btn" type="button" id="checkTicket">ตรวจรางวัลเลย 🔍</button>
             <div id="checkResult" class="check-result hidden"></div>
@@ -176,7 +176,7 @@
               </select>
             </label>
             <label>งวดที่อยากลุ้น
-              <input type="date" id="siamseeDate" />
+              <input type="date" id="siamseeDate" min="1996-07-17" />
             </label>
             <button class="primary-btn siamsee-btn" type="button" id="shakeSiamsee">เขย่าเซียมซีเลย! 🎋</button>
             
@@ -204,11 +204,10 @@
               <button class="secondary-btn" type="button" id="copyFortune">คัดลอกเลข 📋</button>
               <button class="secondary-btn" type="button" id="compareFortune">เทียบอันดับสถิติ 📊</button>
             </div>
-          </section>
-
-          <section class="card history-card">
+            <section class="history-card">
             <div class="card-title-row"><h2>ประวัติการเสี่ยงล่าสุด</h2><button class="text-btn" type="button" id="clearFortuneHistory">ล้างประวัติ</button></div>
             <div id="fortuneHistory" class="fortune-history"><p class="empty-state">ยังไม่มีประวัติ เขย่าก่อนแล้วค่อยโทษดวงนะ 😌</p></div>
+          </section>
           </section>
         </div>
       </section>
@@ -248,7 +247,7 @@
               </select>
             </label>
             <label>งวดที่อยากขอเลข
-              <input type="date" id="tamarindDate" />
+              <input type="date" id="tamarindDate" min="1996-07-17" />
             </label>
             <button class="primary-btn tamarind-btn" type="button" id="startTamarind">ขอเลขจากต้นมะขาม 🌳</button>
             
@@ -271,11 +270,10 @@
               <button class="secondary-btn" type="button" id="copyTamarind">คัดลอกเลข 📋</button>
               <button class="secondary-btn" type="button" id="compareTamarind">เทียบอันดับสถิติ 📊</button>
             </div>
-          </section>
-
-          <section class="card history-card">
+            <section class="history-card">
             <div class="card-title-row"><h2>ประวัติรอยขูดล่าสุด</h2><button class="text-btn" type="button" id="clearTamarindHistory">ล้างประวัติ</button></div>
             <div id="tamarindHistory" class="fortune-history"><p class="empty-state">ยังไม่เคยขูด ต้นมะขามยังเก็บความลับอยู่ค่ะ 🌳</p></div>
+          </section>
           </section>
         </div>
       </section>
@@ -294,9 +292,10 @@
           <section class="card danger-note">
             <h2>คำเตือนจากพิธีกร</h2>
             <p>ซื้อทุกงวดได้ค่ะ แต่ตั้งงบทุกงวดด้วยนะคะ ระวังโดนหวยแดกนะคะ 😌</p>
+            <p>แอปนี้จัดทำเพื่อความบันเทิง ไม่รับรองผลรางวัล โปรดยึดประกาศทางการของสำนักงานสลากกินแบ่งรัฐบาล (GLO) เป็นหลักค่ะ</p>
           </section>
           <section class="card prose small">
-            <p>เวอร์ชันแอป: <span id="appVersion">1.5.0</span></p>
+            <p>เวอร์ชันแอป: <span id="appVersion">1.5.1</span></p>
           </section>
         </div>
       </section>
