@@ -40,8 +40,8 @@ function bindEvents(){
   $$('.seg[data-stat-target]').forEach(b=>b.addEventListener('click',()=>{state.statTarget=b.dataset.statTarget; $$('.seg[data-stat-target]').forEach(x=>x.classList.toggle('active',x===b)); renderStats();}));
   $('#runPredict').addEventListener('click',()=>{renderPrediction(true);toast('ปั่นเลขใหม่แล้วค่ะ ระวังโดนหวยแดกนะคะ 😏');}); $('#predictDate').addEventListener('change',()=>renderPrediction(true)); $('#modelMode').addEventListener('change',()=>renderPrediction(true));
   $('#homeRefresh').addEventListener('click',()=>refreshLatest(true)); $('#checkTicket').addEventListener('click',checkTicket);
-  $('#shakeSiamsee').addEventListener('click',shakeSiamsee); $('#copyFortune').addEventListener('click',copyFortune); $('#compareFortune').addEventListener('click',compareFortune); $('#clearFortuneHistory').addEventListener('click',clearFortuneHistory);
-  $('#startTamarind').addEventListener('click',startTamarind); $('#revealTamarind').addEventListener('click',()=>revealTamarind(false)); $('#copyTamarind').addEventListener('click',copyTamarind); $('#compareTamarind').addEventListener('click',compareTamarind); $('#clearTamarindHistory').addEventListener('click',clearTamarindHistory);
+  $('#shakeSiamsee').addEventListener('click',shakeSiamsee); $('#copyFortune').addEventListener('click',copyFortune); $('#compareFortune').addEventListener('click',compareFortune); $('#clearFortuneHistory').addEventListener('click',clearFortuneHistory); $('#closeFortune').addEventListener('click',()=>$('#fortuneResult').classList.add('hidden'));
+  $('#startTamarind').addEventListener('click',startTamarind); $('#revealTamarind').addEventListener('click',()=>revealTamarind(false)); $('#copyTamarind').addEventListener('click',copyTamarind); $('#compareTamarind').addEventListener('click',compareTamarind); $('#clearTamarindHistory').addEventListener('click',clearTamarindHistory); $('#closeTamarind').addEventListener('click',()=>$('#tamarindResult').classList.add('hidden'));
   window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();state.deferredInstall=e;$('#installBtn').hidden=false;});
   $('#installBtn').addEventListener('click',async()=>{
     if(state.deferredInstall){state.deferredInstall.prompt();await state.deferredInstall.userChoice;state.deferredInstall=null;$('#installBtn').hidden=true;return;}
@@ -52,11 +52,11 @@ function bindEvents(){
 function isIosSafari(){return /iphone|ipad|ipod/i.test(navigator.userAgent)&&/safari/i.test(navigator.userAgent)&&!/crios|fxios|edgios/i.test(navigator.userAgent);}
 function isStandalone(){return window.matchMedia?.('(display-mode: standalone)').matches||navigator.standalone===true;}
 function setupInstallHelp(){const hint=$('#iosInstallHint');if(isIosSafari()&&!isStandalone()){if(hint)hint.hidden=false;$('#installBtn').hidden=false;$('#installBtn').setAttribute('aria-label','วิธีติดตั้งบน iPhone หรือ iPad');}}
-function go(page){state.page=page;$$('.page').forEach(p=>p.classList.toggle('active',p.dataset.page===page));$$('.nav-item').forEach(n=>n.classList.toggle('active',n.dataset.go===page));window.scrollTo({top:0,behavior:'smooth'});}
+function go(page){state.page=page;$('#fortuneResult')?.classList.add('hidden');$('#tamarindResult')?.classList.add('hidden');$$('.page').forEach(p=>p.classList.toggle('active',p.dataset.page===page));$$('.nav-item').forEach(n=>n.classList.toggle('active',n.dataset.go===page));}
 function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._timer);t._timer=setTimeout(()=>t.classList.remove('show'),2600);}
 function thaiDate(iso){const d=new Date(iso+'T00:00:00');return `${d.getDate()} ${months[d.getMonth()+1]} ${d.getFullYear()+543}`;}
 function normalizeLocalLatest(r){return {date:r.date,displayDate:r.date_th,first:r.first,second:r.second,front3:r.front3,back3:r.back3,last2:r.last2};}
-function renderHome(){renderLatestCard($('#homeLatest .latest-grid'),state.latest);const top=state.model.predictions.last2.top.slice(0,5);$('#homePicks').innerHTML=top.map(x=>`<span class="pick-ball">${x.number}</span>`).join('');}
+function renderHome(){renderLatestCard($('#homeLatest .latest-grid'),state.latest);const top=state.model.predictions.last2.top.slice(0,4);$('#homePicks').innerHTML=top.map(x=>`<span class="pick-ball">${x.number}</span>`).join('');}
 function renderLatestCard(el,l){el.classList.remove('skeleton');el.innerHTML=`
   <div class="prize-box large"><div class="prize-label">งวดวันที่ ${thaiDate(l.date)}</div><div class="prize-label">รางวัลที่ 1</div><div class="prize-number">${l.first}</div></div>
   <div class="prize-box"><div class="prize-label">เลขท้าย 2 ตัว</div><div class="prize-number teal-number">${l.last2}</div></div>
@@ -86,7 +86,7 @@ function renderPrediction(spin=true){
   const date=$('#predictDate').value||state.model.next_draw_default,mode=$('#modelMode').value,field=state.predictTarget,history=predictionHistory(date),ctx=contextFromDate(date);
   $('#predictionContext').textContent=`${thaiDate(date)} • วัน${weekdays[ctx.weekday]} • เดือน${months[ctx.month]} • ราศี${zodiacs[ctx.zodiac]}`;
   if(!history.length){$('#predictionList').innerHTML='<p class="empty-state">ยังไม่มีข้อมูลสำหรับงวดนี้ค่ะ</p>';return;}
-  const ranked=scoreNumbers(field,date,mode,history),picked=spin?weightedSpin(ranked,10):ranked.slice(0,10),max=Math.max(...picked.map(x=>x.score));
+  const ranked=scoreNumbers(field,date,mode,history),picked=spin?weightedSpin(ranked,5):ranked.slice(0,5),max=Math.max(...picked.map(x=>x.score));
   $('#predictionList').innerHTML=picked.map((x,i)=>`<div class="rank-item"><div class="rank-medal">${i+1}</div><div class="rank-number">${x.number}</div><div class="rank-bar"><div class="rank-fill" style="width:${Math.max(12,x.score/max*100)}%"></div></div></div>`).join('');
 }
 
@@ -185,9 +185,9 @@ async function checkTicket(){
   const box=$('#checkResult');box.className='check-result';box.textContent='กำลังตรวจผลออนไลน์…';
   try{
     const r=await fetch('api/check',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({number:[{lottery_num:num}],period_date:period}),signal:AbortSignal.timeout(8000)});
-    if(r.ok){const parsed=normalizeApiCheck(await r.json(),num);if(parsed?.recognized){showCheck(parsed.won,parsed.won?`ตรงกับ: ${parsed.prizes.join(', ')} โปรดเก็บสลากไว้ตรวจอีกครั้ง`:'ไม่พบรางวัลสำหรับหมายเลขนี้ในงวดที่เลือก');return;}}
+    if(r.ok){const parsed=normalizeApiCheck(await r.json(),num);if(parsed?.recognized){showCheck(parsed.won,parsed.won?`ตรงกับ: ${parsed.prizes.join(', ')} โปรดเก็บสลากไว้ตรวจกับประกาศทางการอีกครั้ง (ตรวจออนไลน์จาก GLO)`:'ไม่พบรางวัลสำหรับหมายเลขนี้ในงวดที่เลือก (ตรวจออนไลน์จาก GLO ครบทุกประเภทรางวัล)');return;}}
     const draw=await fetchFullDraw(period);
-    if(draw){const won=checkAgainstDraw(num,draw);showCheck(won.length>0,won.length?`ตรงกับ: ${won.join(', ')}`:'ยังไม่พบว่าตรงกับรางวัล');return;}
+    if(draw){const won=checkAgainstDraw(num,draw);showCheck(won.length>0,won.length?`ตรงกับ: ${won.join(', ')} (เทียบผลเต็มงวดจาก GLO)`:'ยังไม่พบว่าตรงกับรางวัล (เทียบผลเต็มงวดจาก GLO ครบทุกประเภทรางวัล)');return;}
   }catch(e){console.warn('online check fallback:',e);}
   localCheck(num,period);
 }
@@ -195,9 +195,9 @@ function localCheck(num,period){
   const d=state.data.find(r=>r.date===period);
   if(!d){showCheck(false,'ยังไม่มีข้อมูลงวดนี้ค่ะ กรุณาลองใหม่ภายหลัง');return;}
   const won=[];if(num===d.first)won.push('รางวัลที่ 1');if((d.second||[]).includes(num))won.push('รางวัลที่ 2');if((d.front3||[]).includes(num.slice(0,3)))won.push('เลขหน้า 3 ตัว');if((d.back3||[]).includes(num.slice(-3)))won.push('เลขท้าย 3 ตัว');if(num.slice(-2)===d.last2)won.push('เลขท้าย 2 ตัว');
-  showCheck(won.length>0,won.length?`ตรงกับ: ${won.join(', ')}`:'ยังไม่พบรางวัลค่ะ เก็บสลากไว้ตรวจซ้ำอีกครั้งนะคะ');
+  showCheck(won.length>0,won.length?`ตรงกับ: ${won.join(', ')} (ฐานข้อมูลในเครื่อง)`:'ยังไม่พบใน 5 ประเภทที่ฐานข้อมูลในเครื่องตรวจได้ค่ะ อย่าเพิ่งทิ้งสลากนะคะ — รางวัลข้างเคียงรางวัลที่ 1 และรางวัลที่ 3–5 ต้องตรวจจากประกาศ GLO อีกครั้ง');
 }
-function showCheck(win,msg){const box=$('#checkResult');box.className=`check-result ${win?'':'lose'}`;box.innerHTML=`<b>${win?'🎉 มีข่าวดี':'🥲 ยังไม่พบรางวัล'}</b><br>${msg}`;}
+function showCheck(win,msg){const box=$('#checkResult');box.className=`check-result ${win?'':'lose'}`;box.innerHTML=`<b>${win?'🎉 มีข่าวดี':'🥲 ยังไม่พบรางวัล'}</b><br>${msg}`;setTimeout(()=>box.scrollIntoView({behavior:'smooth',block:'nearest'}),60);}
 
 const fortuneMessages={
   verygood:[
@@ -248,7 +248,7 @@ function fortuneTwoDigit(dateIso,mode){
   if(mode!=='blend')return randomDigits(2);
   const ranked=scoreNumbers('last2',dateIso,'balanced');
   // 70% uniform randomness + 30% statistical weighting; all 100 numbers remain possible.
-  if(secureInt(100)<70)return randomDigits(2);
+  if(!ranked.length||secureInt(100)<70)return randomDigits(2);
   const items=ranked.map(x=>x.number),weights=ranked.map((x,i)=>Math.max(.1,x.score)*(1+(100-i)/350));
   return weightedPick(items,weights);
 }
@@ -279,7 +279,7 @@ function renderFortune(f){
   $('#fortuneGrade').textContent=`${f.grade}`;$('#fortuneMessage').textContent=f.message;
   $('#fortune2').textContent=f.two;$('#fortune3').textContent=f.three;$('#fortune6').textContent=f.six;$('#fortuneSupport').textContent=f.supports.join(' · ');
   $('#fortuneMeta').textContent=`งวด ${thaiDate(f.date)} • ${f.mode==='blend'?'ผสมอันดับเลข':'สุ่มล้วน'}`;
-  $('#fortuneResult').classList.remove('hidden');$('#fortuneResult').scrollIntoView({behavior:'smooth',block:'center'});
+  $('#fortuneResult').classList.remove('hidden');
 }
 const FORTUNE_STORAGE_KEY='chan-ja-sue-huay-thuk-nguat-fortunes';
 const LEGACY_FORTUNE_STORAGE_KEY='tookhuaydaek-fortunes';
@@ -294,9 +294,9 @@ function getFortuneHistory(){
 }
 function saveFortune(f){const history=[f,...getFortuneHistory().filter(x=>x.id!==f.id)].slice(0,10);localStorage.setItem(FORTUNE_STORAGE_KEY,JSON.stringify(history));}
 function renderFortuneHistory(){const el=$('#fortuneHistory');if(!el)return;const history=getFortuneHistory();if(!history.length){el.innerHTML='<p class="empty-state">ยังไม่มีประวัติ เขย่าก่อนแล้วค่อยโทษดวงนะ 😌</p>';return;}el.innerHTML=history.map(f=>`<button class="fortune-history-item" data-fortune-id="${f.id}"><span><b>${f.two}</b><small>${f.grade}</small></span><span><small>${thaiDate(f.date)}</small><em>${f.mode==='blend'?'ผสมอันดับ':'สุ่มล้วน'}</em></span></button>`).join('');$$('[data-fortune-id]',el).forEach(b=>b.addEventListener('click',()=>{const f=history.find(x=>String(x.id)===b.dataset.fortuneId);if(f){state.lastFortune=f;renderFortune(f);}}));}
-async function copyFortune(){const f=state.lastFortune;if(!f){toast('เขย่าเซียมซีก่อนนะจ๊ะ');return;}const text=`ฉันจะซื้อหวยทุกงวด — ใบเซียมซี ${f.stick}\n${f.grade}\nเลข 2 ตัว: ${f.two}\nเลข 3 ตัว: ${f.three}\nเลข 6 หลัก: ${f.six}\nเลขประกอบ: ${f.supports.join(', ')}\n${f.message}\n`;
+async function copyFortune(){const f=state.lastFortune;if(!f){toast('เขย่าเซียมซีก่อนนะจ๊ะ');return;}const text=`ฉันจะซื้อหวยทุกงวด — ใบเซียมซี ${f.stick}\n${f.grade}\nเลข 2 ตัว: ${f.two}\nเลข 3 ตัว: ${f.three}\nเลข 6 หลัก: ${f.six}\nเลขประกอบ: ${f.supports.join(', ')}\n${f.message}\n*เพื่อความบันเทิง ไม่รับรองผลรางวัล`;
   try{await navigator.clipboard.writeText(text);toast('คัดลอกเลขแล้ว อย่าลืมคัดลอกสติไปด้วยนะ');}catch{toast('คัดลอกไม่สำเร็จ ลองกดค้างที่ตัวเลขแทน');}}
-function compareFortune(){const f=state.lastFortune;if(!f){toast('ยังไม่มีเลขให้เทียบ');return;}$('#predictDate').value=f.date;state.predictTarget='last2';$$('.seg[data-predict-target]').forEach(x=>x.classList.toggle('active',x.dataset.predictTarget==='last2'));go('predict');renderPrediction();setTimeout(()=>{const row=[...$('#predictionList').children].find(x=>x.querySelector('.rank-number')?.textContent===f.two);if(row){row.classList.add('fortune-highlight');row.scrollIntoView({behavior:'smooth',block:'center'});toast(`เลข ${f.two} อยู่ใน 10 อันดับแรกของหน้าปัจจุบัน`);}else toast(`เลข ${f.two} ไม่อยู่ใน 10 อันดับแรก — ดวงกับสถิติวันนี้ยังไม่คุยกัน`);},150);}
+function compareFortune(){const f=state.lastFortune;if(!f){toast('ยังไม่มีเลขให้เทียบ');return;}$('#predictDate').value=f.date;state.predictTarget='last2';$$('.seg[data-predict-target]').forEach(x=>x.classList.toggle('active',x.dataset.predictTarget==='last2'));go('predict');renderPrediction(false);setTimeout(()=>{const row=[...$('#predictionList').children].find(x=>x.querySelector('.rank-number')?.textContent===f.two);if(row){row.classList.add('fortune-highlight');row.scrollIntoView({behavior:'smooth',block:'center'});toast(`เลข ${f.two} อยู่ใน 5 อันดับแรกของหน้าปัจจุบัน`);}else toast(`เลข ${f.two} ไม่อยู่ใน 5 อันดับแรก — ดวงกับสถิติวันนี้ยังไม่คุยกัน`);},150);}
 function clearFortuneHistory(){if(!window.confirm('ล้างประวัติเซียมซีทั้งหมดใช่ไหมคะ? เลขหายได้ แต่เงินที่ซื้อไปไม่ย้อนกลับนะ 😌'))return;localStorage.removeItem(FORTUNE_STORAGE_KEY);localStorage.removeItem(LEGACY_FORTUNE_STORAGE_KEY);state.lastFortune=null;$('#fortuneResult').classList.add('hidden');renderFortuneHistory();toast('ล้างประวัติแล้ว หลักฐานหาย แต่เงินที่ซื้อไปไม่กลับมานะ');}
 
 
@@ -324,7 +324,7 @@ function startTamarind(){
   button.disabled=true;button.textContent='ต้นมะขามกำลังรวมสมาธิ…';
   $('#tamarindHostLine').textContent=tamarindHostLines[secureInt(tamarindHostLines.length)];
   const mark=tamarindMarks[secureInt(tamarindMarks.length)],two=fortuneTwoDigit(date,mode),three=randomDigits(3),six=randomDigits(6);
-  const supports=new Set();while(supports.size<3)supports.add(fortuneTwoDigit(date,mode));
+  const supports=new Set();while(supports.size<3){const n=fortuneTwoDigit(date,mode);if(n&&n!==two)supports.add(n);}
   const ctx=contextFromDate(date);
   state.lastTamarind={id:Date.now(),date,mode,two,three,six,supports:[...supports],mark:mark.name,message:mark.message,context:`วัน${weekdays[ctx.weekday]} • เดือน${months[ctx.month]} • ราศี${zodiacs[ctx.zodiac]}`};
   saveTamarind(state.lastTamarind);renderTamarindHistory();prepareTamarindScratch();
@@ -357,15 +357,15 @@ function revealTamarind(auto=false){
 }
 function renderTamarind(t){
   $('#tamarindMarkName').textContent=t.mark;$('#tamarindMessage').textContent=t.message;$('#tamarind2').textContent=t.two;$('#tamarind3').textContent=t.three;$('#tamarind6').textContent=t.six;$('#tamarindSupport').textContent=t.supports.join(' · ');$('#tamarindMeta').textContent=`งวด ${thaiDate(t.date)} • ${t.mode==='blend'?'ผสมอันดับเลข':'สุ่มล้วน'}`;
-  $('#tamarindResult').classList.remove('hidden');$('#tamarindResult').scrollIntoView({behavior:'smooth',block:'center'});
+  $('#tamarindResult').classList.remove('hidden');
 }
 function renderTamarindHistory(){const el=$('#tamarindHistory');if(!el)return;const history=getTamarindHistory();if(!history.length){el.innerHTML='<p class="empty-state">ยังไม่เคยขูด ต้นมะขามยังเก็บความลับอยู่ค่ะ 🌳</p>';return;}el.innerHTML=history.map(t=>`<button class="fortune-history-item tamarind-history-item" data-tamarind-id="${t.id}"><span><b>${t.two}</b><small>${t.mark}</small></span><span><small>${thaiDate(t.date)}</small><em>${t.mode==='blend'?'ผสมอันดับ':'สุ่มล้วน'}</em></span></button>`).join('');$$('[data-tamarind-id]',el).forEach(b=>b.addEventListener('click',()=>{const t=history.find(x=>String(x.id)===b.dataset.tamarindId);if(t){state.lastTamarind=t;$('#tamarindReveal2').textContent=t.two;$('#tamarindRevealMark').textContent=t.mark;revealTamarind(false);}}));}
-async function copyTamarind(){const t=state.lastTamarind;if(!t){toast('ยังไม่มีเลขจากต้นมะขามค่ะ');return;}const text=`ฉันจะซื้อหวยทุกงวด — ขูดต้นมะขามจำลอง\n${t.mark}\nเลข 2 ตัว: ${t.two}\nเลข 3 ตัว: ${t.three}\nเลข 6 หลัก: ${t.six}\nเลขกิ่งก้าน: ${t.supports.join(', ')}\n${t.message}\n และห้ามขูดต้นไม้จริง`;try{await navigator.clipboard.writeText(text);toast('คัดลอกเลขแล้ว อย่าคัดลอกความมั่นใจเกินร้อยนะคะ');}catch{toast('คัดลอกไม่สำเร็จ ลองกดค้างที่ตัวเลขแทน');}}
-function compareTamarind(){const t=state.lastTamarind;if(!t){toast('ยังไม่มีเลขจากต้นมะขามให้เทียบ');return;}$('#predictDate').value=t.date;state.predictTarget='last2';$$('.seg[data-predict-target]').forEach(x=>x.classList.toggle('active',x.dataset.predictTarget==='last2'));go('predict');renderPrediction();setTimeout(()=>{const row=[...$('#predictionList').children].find(x=>x.querySelector('.rank-number')?.textContent===t.two);if(row){row.classList.add('fortune-highlight');row.scrollIntoView({behavior:'smooth',block:'center'});toast(`เลข ${t.two} อยู่ใน 10 อันดับแรก — ต้นมะขามกับสถิติพยักหน้าพร้อมกัน`);}else toast(`เลข ${t.two} ไม่อยู่ใน 10 อันดับแรก — ต้นมะขามกับสถิติยังงอนกันค่ะ`);},150);}
+async function copyTamarind(){const t=state.lastTamarind;if(!t){toast('ยังไม่มีเลขจากต้นมะขามค่ะ');return;}const text=`ฉันจะซื้อหวยทุกงวด — ขูดต้นมะขามจำลอง\n${t.mark}\nเลข 2 ตัว: ${t.two}\nเลข 3 ตัว: ${t.three}\nเลข 6 หลัก: ${t.six}\nเลขกิ่งก้าน: ${t.supports.join(', ')}\n${t.message}\n*เพื่อความบันเทิง ไม่รับรองผลรางวัล และห้ามขูดต้นไม้จริง`;try{await navigator.clipboard.writeText(text);toast('คัดลอกเลขแล้ว อย่าคัดลอกความมั่นใจเกินร้อยนะคะ');}catch{toast('คัดลอกไม่สำเร็จ ลองกดค้างที่ตัวเลขแทน');}}
+function compareTamarind(){const t=state.lastTamarind;if(!t){toast('ยังไม่มีเลขจากต้นมะขามให้เทียบ');return;}$('#predictDate').value=t.date;state.predictTarget='last2';$$('.seg[data-predict-target]').forEach(x=>x.classList.toggle('active',x.dataset.predictTarget==='last2'));go('predict');renderPrediction(false);setTimeout(()=>{const row=[...$('#predictionList').children].find(x=>x.querySelector('.rank-number')?.textContent===t.two);if(row){row.classList.add('fortune-highlight');row.scrollIntoView({behavior:'smooth',block:'center'});toast(`เลข ${t.two} อยู่ใน 5 อันดับแรก — ต้นมะขามกับสถิติพยักหน้าพร้อมกัน`);}else toast(`เลข ${t.two} ไม่อยู่ใน 5 อันดับแรก — ต้นมะขามกับสถิติยังงอนกันค่ะ`);},150);}
 function clearTamarindHistory(){if(!window.confirm('ล้างประวัติขูดต้นมะขามทั้งหมดใช่ไหมคะ? รอยในจอลบได้ แต่เงินที่ซื้อหวยไปลบไม่ได้นะ 😌'))return;localStorage.removeItem(TAMARIND_STORAGE_KEY);state.lastTamarind=null;state.tamarindReady=false;$('#tamarindResult').classList.add('hidden');$('#revealTamarind').hidden=true;$('#tamarindReveal2').textContent='--';$('#tamarindRevealMark').textContent='รอยยังไม่มา';renderTamarindHistory();toast('ล้างรอยขูดแล้ว ต้นมะขามกลับมาผิวเนียนค่ะ');}
 
 function renderStats(){if(!state.model)return;const field=state.statTarget,s=state.model.stats[field],vals=state.data.map(r=>+r[field]);const unique=new Set(vals).size,mean=vals.reduce((a,b)=>a+b,0)/vals.length,hot=s.top_frequency[0];$('#statsMetrics').innerHTML=`<div class="metric"><b>${state.data.length}</b><span>จำนวนงวด</span></div><div class="metric"><b>${unique}/100</b><span>เลขที่เคยออก</span></div><div class="metric"><b>${mean.toFixed(1)}</b><span>ค่าเฉลี่ย</span></div><div class="metric"><b>${hot.number}</b><span>พบบ่อยสุด ${hot.count} ครั้ง</span></div>`;const max=Math.max(...s.digit_units);$('#digitChart').innerHTML=s.digit_units.map((v,i)=>`<div class="bar-col"><div class="bar-value">${v}</div><div class="bar" style="height:${v/max*145}px"></div><div class="bar-label">${i}</div></div>`).join('');$('#hotNumbers').innerHTML=s.top_frequency.slice(0,15).map(x=>`<div class="number-chip"><b>${x.number}</b><small>${x.count} ครั้ง</small></div>`).join('');}
 
 if(typeof document!=='undefined')document.addEventListener('DOMContentLoaded',init);
 function __setTestState(data=[],model=null){state.data=data;state.model=model;}
-export {normalizeApiLatest,normalizeApiDraw,normalizeApiCheck,toIsoDate,prizeValues,checkAgainstDraw,predictionHistory,scoreNumbers,secureInt,__setTestState};
+export {normalizeApiLatest,normalizeApiDraw,normalizeApiCheck,toIsoDate,prizeValues,checkAgainstDraw,predictionHistory,scoreNumbers,secureInt,fortuneTwoDigit,__setTestState};

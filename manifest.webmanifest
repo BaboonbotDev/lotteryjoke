@@ -1,11 +1,11 @@
 {
   "name": "ฉันจะซื้อหวยทุกงวด",
   "short_name": "หวยทุกงวด",
-  "description": "แอปปั่นเลข ตรวจผล เซียมซี และขูดต้นมะขามแบบกวน ๆ",
+  "description": "แอปตรวจหวย ปั่นเลข เซียมซี และขูดเลข สไตล์ horoscope anime-moe",
   "start_url": "./",
   "display": "standalone",
-  "background_color": "#fff8ec",
-  "theme_color": "#9f2d22",
+  "background_color": "#f8f5ff",
+  "theme_color": "#8b5cf6",
   "lang": "th",
   "icons": [
     {

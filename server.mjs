@@ -22,7 +22,7 @@ async function readJsonBody(req,maxBytes=64_000){
   try{return JSON.parse(text||'{}')}catch{throw new Error('invalid JSON body')}
 }
 async function proxy(url,payload={}){
-  const response=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json','User-Agent':'ChanJaSueHuayThukNguat/1.4.1'},body:JSON.stringify(payload),signal:AbortSignal.timeout(8000)});
+  const response=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json','User-Agent':'ChanJaSueHuayThukNguat/1.5.1'},body:JSON.stringify(payload),signal:AbortSignal.timeout(8000)});
   const text=await response.text();let data;
   try{data=JSON.parse(text)}catch{data={raw:text}}
   return {status:response.status,data};
