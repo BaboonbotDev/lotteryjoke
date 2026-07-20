@@ -80,7 +80,7 @@
         <div class="content-stack">
           <section class="card filter-card">
             <label>งวดที่อยากลุ้น
-              <input type="date" id="predictDate" min="1996-07-17" />
+              <input type="date" id="predictDate" />
             </label>
             <label>สไตล์การปั่น
               <select id="modelMode">
@@ -117,7 +117,7 @@
               <input id="ticketNumber" inputmode="numeric" maxlength="6" placeholder="เช่น 123456" />
             </label>
             <label>งวดวันที่
-              <input type="date" id="checkDate" min="1996-07-16" />
+              <input type="date" id="checkDate" />
             </label>
             <button class="primary-btn teal-btn" type="button" id="checkTicket">ตรวจรางวัลเลย 🔍</button>
             <div id="checkResult" class="check-result hidden"></div>
@@ -149,136 +149,79 @@
         </div>
       </section>
 
-      <section class="page" data-page="siamsee">
-        <div class="page-head siamsee-head">
+      <section class="page luck-page" data-page="siamsee">
+        <div class="page-head luck-head">
           <button type="button" class="back-btn" data-go="home">‹</button>
-          <div><h1>เซียมซี</h1><p>เขย่าแล้วรับเลขไปลุ้นกันเลย</p></div>
+          <div class="luck-head-copy"><h1>เซียมซี</h1><p>เสี่ยงทายให้โชคดี</p></div>
+          <button type="button" class="head-round-btn" id="siamseeHistoryBtn" aria-label="ดูประวัติเซียมซี">◷<small>ประวัติ</small></button>
         </div>
-        <div class="content-stack siamsee-stack">
-          <section class="card siamsee-stage">
-            <div class="incense-glow" aria-hidden="true"></div>
-            <div class="siamsee-host-line" id="siamseeHostLine">ตั้งจิตให้มั่น…แล้วตั้งงบให้แน่นกว่าจิตนะจ๊ะ</div>
-            <div class="fortune-pot" id="fortunePot" aria-label="กระบอกเซียมซี">
-              <div class="fortune-sticks" aria-hidden="true">
-                <i></i><i></i><i></i><i></i><i></i><i></i><i></i>
-              </div>
-              <div class="pot-rim"></div>
-              <div class="pot-body"><span>โชค</span></div>
+        <div class="luck-screen siamsee-screen">
+          <div class="luck-decor blossom-one">✿</div><div class="luck-decor blossom-two">✦</div><div class="luck-decor blossom-three">❀</div>
+          <div class="siamsee-host-line" id="siamseeHostLine">ตั้งจิตให้มั่น…แล้วตั้งงบให้แน่นกว่าจิตนะจ๊ะ</div>
+          <div class="fortune-pot modern-pot" id="fortunePot" aria-label="กระบอกเซียมซี">
+            <img src="assets/siamsee-stage.webp" alt="กระบอกเซียมซีไม้ไผ่สไตล์อนิเมะ" class="siamsee-stage-art" />
+          </div>
+          <div class="luck-bottom-panel">
+            <div class="mini-choice-row">
+              <label><span>รูปแบบ</span><select id="siamseeMode"><option value="pure">สุ่มล้วน</option><option value="blend">ผสมอันดับเลข</option></select></label>
+              <label><span>งวด</span><input type="date" id="siamseeDate" /></label>
             </div>
-            <p class="shake-hint">แตะปุ่มแล้วเขย่า ลุ้นเลขกันเลย</p>
-          </section>
-
-          <section class="card siamsee-controls">
-            <label>เลือกแบบ
-              <select id="siamseeMode">
-                <option value="pure">สุ่มล้วน</option>
-                <option value="blend">ผสมอันดับเลข</option>
-              </select>
-            </label>
-            <label>งวดที่อยากลุ้น
-              <input type="date" id="siamseeDate" min="1996-07-17" />
-            </label>
-            <button class="primary-btn siamsee-btn" type="button" id="shakeSiamsee">เขย่าเซียมซีเลย! 🎋</button>
-            
-          </section>
-
+            <button class="primary-btn luck-main-btn" type="button" id="shakeSiamsee">เขย่าเซียมซี 🌼</button>
+            <button class="ghost-luck-btn" type="button" id="siamseeQuickPick">↻ เปลี่ยนดวง</button>
+          </div>
           <section class="card fortune-result hidden result-sheet" id="fortuneResult" aria-live="polite">
             <button type="button" class="result-close" id="closeFortune" aria-label="ปิดผลเซียมซี">×</button>
             <div class="fortune-paper">
-              <div class="fortune-paper-head">
-                <span>ใบเซียมซี</span><b id="fortuneStickNo">๐๐</b>
-              </div>
+              <div class="fortune-paper-head"><span>คำทำนายวันนี้</span><b id="fortuneStickNo">๐๐</b></div>
               <div class="fortune-grade" id="fortuneGrade"></div>
               <p class="fortune-message" id="fortuneMessage"></p>
-              <div class="fortune-number-main">
-                <small>เลข 2 ตัว</small><strong id="fortune2">--</strong>
-              </div>
-              <div class="fortune-number-grid">
-                <div><small>เลข 3 ตัว</small><b id="fortune3">---</b></div>
-                <div><small>เลข 6 หลัก</small><b id="fortune6">------</b></div>
-              </div>
+              <div class="fortune-number-main"><small>เลข 2 ตัว</small><strong id="fortune2">--</strong></div>
+              <div class="fortune-number-grid"><div><small>เลข 3 ตัว</small><b id="fortune3">---</b></div><div><small>เลข 6 หลัก</small><b id="fortune6">------</b></div></div>
               <div class="fortune-support">เลขประกอบ: <b id="fortuneSupport">-- · -- · --</b></div>
               <div class="fortune-meta" id="fortuneMeta"></div>
             </div>
-            <div class="fortune-actions">
-              <button class="secondary-btn" type="button" id="copyFortune">คัดลอกเลข 📋</button>
-              <button class="secondary-btn" type="button" id="compareFortune">เทียบอันดับสถิติ 📊</button>
-            </div>
-            <section class="history-card">
-            <div class="card-title-row"><h2>ประวัติการเสี่ยงล่าสุด</h2><button class="text-btn" type="button" id="clearFortuneHistory">ล้างประวัติ</button></div>
+            <div class="fortune-actions"><button class="secondary-btn" type="button" id="copyFortune">บันทึกชุดนี้</button><button class="secondary-btn" type="button" id="compareFortune">เทียบอันดับ</button></div>
+          </section>
+          <section class="card history-card luck-history-sheet" id="siamseeHistorySheet">
+            <div class="card-title-row"><h2>ประวัติการเสี่ยงล่าสุด</h2><button class="text-btn" type="button" id="clearFortuneHistory">ล้าง</button></div>
             <div id="fortuneHistory" class="fortune-history"><p class="empty-state">ยังไม่มีประวัติ เขย่าก่อนแล้วค่อยโทษดวงนะ 😌</p></div>
           </section>
-          </section>
         </div>
       </section>
 
-      <section class="page" data-page="tamarind">
-        <div class="page-head tamarind-head">
+      <section class="page luck-page" data-page="tamarind">
+        <div class="page-head luck-head tamarind-head">
           <button type="button" class="back-btn" data-go="home">‹</button>
-          <div><h1>ขูดต้นมะขาม</h1><p>ขูดเบา ๆ แล้วรอดูเลขโผล่ได้เลย</p></div>
+          <div class="luck-head-copy"><h1>ขูดต้นมะขาม</h1><p>ขูดเลขเคล็ดเด็ดดวง</p></div>
+          <button type="button" class="head-round-btn" id="tamarindHistoryBtn" aria-label="ดูประวัติขูดเลข">◷<small>ประวัติ</small></button>
         </div>
-        <div class="content-stack tamarind-stack">
-          <section class="card tamarind-stage">
-            <div class="tamarind-host-line" id="tamarindHostLine">ตั้งงบก่อนตั้งจิตนะคะ ต้นมะขามไม่รับผิดชอบเงินปลิว 🌿</div>
-            <div class="tamarind-tree" aria-label="ต้นมะขามจำลองสำหรับขูดหาเลข">
-              <div class="tamarind-canopy" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
-              <div class="tamarind-trunk">
-                <div class="tamarind-knot" aria-hidden="true"></div>
-                <div class="tamarind-scratch" id="tamarindScratchArea">
-                  <div class="tamarind-hidden-number">
-                    <small>เลขที่เห็นใต้เปลือก</small>
-                    <strong id="tamarindReveal2">--</strong>
-                    <span id="tamarindRevealMark">รอยยังไม่มา</span>
-                  </div>
-                  <canvas id="tamarindCanvas" width="280" height="180" aria-label="ลากนิ้วหรือเมาส์เพื่อขูดเปลือกไม้"></canvas>
-                </div>
-              </div>
-              <div class="tamarind-roots" aria-hidden="true"></div>
+        <div class="luck-screen tamarind-screen">
+          <div class="tamarind-host-line" id="tamarindHostLine">ตั้งงบก่อนตั้งจิตนะคะ ต้นมะขามไม่รับผิดชอบเงินปลิว 🌿</div>
+          <div class="tamarind-tree modern-tree" aria-label="ต้นมะขามสำหรับขูดหาเลข">
+            <img src="assets/tamarind-stage.webp" alt="ต้นมะขามสไตล์อนิเมะ" class="tamarind-stage-art" />
+            <div class="tamarind-scratch modern-scratch" id="tamarindScratchArea">
+              <div class="tamarind-hidden-number"><small>เลขใต้เปลือก</small><strong id="tamarindReveal2">--</strong><span id="tamarindRevealMark">รอยยังไม่มา</span></div>
+              <canvas id="tamarindCanvas" width="300" height="190" aria-label="ลากนิ้วหรือเมาส์เพื่อขูดเปลือกไม้"></canvas>
             </div>
-            <p class="scratch-hint" id="tamarindScratchHint">กด “ขอเลขจากต้นมะขาม” ก่อน แล้วใช้นิ้วขูดบริเวณกลางลำต้น</p>
-            <button class="text-btn reveal-tree-btn" type="button" id="revealTamarind" hidden>ขูดไม่ไหว เปิดเลขให้เลย</button>
-          </section>
-
-          <section class="card tamarind-controls">
-            <label>เลือกแบบ
-              <select id="tamarindMode">
-                <option value="pure">สุ่มล้วน</option>
-                <option value="blend">ผสมอันดับเลข</option>
-              </select>
-            </label>
-            <label>งวดที่อยากขอเลข
-              <input type="date" id="tamarindDate" min="1996-07-17" />
-            </label>
-            <button class="primary-btn tamarind-btn" type="button" id="startTamarind">ขอเลขจากต้นมะขาม 🌳</button>
-            
-          </section>
-
+          </div>
+          <div class="scratch-status"><div class="scratch-copy"><span id="tamarindScratchHint">กดเริ่มก่อน แล้วขูดบริเวณกลางต้น</span><b id="tamarindPercent">0%</b></div><div class="scratch-track"><i id="tamarindProgress"></i></div></div>
+          <div class="luck-bottom-panel tamarind-bottom-panel">
+            <div class="mini-choice-row">
+              <label><span>รูปแบบ</span><select id="tamarindMode"><option value="pure">สุ่มล้วน</option><option value="blend">ผสมอันดับเลข</option></select></label>
+              <label><span>งวด</span><input type="date" id="tamarindDate" /></label>
+            </div>
+            <button class="primary-btn luck-main-btn tamarind-btn" type="button" id="startTamarind">เริ่มขูดต้นมะขาม 🌳</button>
+            <button class="ghost-luck-btn" type="button" id="revealTamarind" hidden>เปิดเลขให้เลย</button>
+          </div>
           <section class="card tamarind-result hidden result-sheet" id="tamarindResult" aria-live="polite">
             <button type="button" class="result-close" id="closeTamarind" aria-label="ปิดผลขูดเลข">×</button>
-            <div class="bark-paper">
-              <div class="bark-paper-head"><span>ลายแทงใต้เปลือก</span><b id="tamarindMarkName">รอยมดแดง</b></div>
-              <p class="tamarind-message" id="tamarindMessage"></p>
-              <div class="tamarind-number-main"><small>เลข 2 ตัว</small><strong id="tamarind2">--</strong></div>
-              <div class="fortune-number-grid">
-                <div><small>เลข 3 ตัว</small><b id="tamarind3">---</b></div>
-                <div><small>เลข 6 หลัก</small><b id="tamarind6">------</b></div>
-              </div>
-              <div class="fortune-support">เลขกิ่งก้าน: <b id="tamarindSupport">-- · -- · --</b></div>
-              <div class="fortune-meta" id="tamarindMeta"></div>
-            </div>
-            <div class="fortune-actions">
-              <button class="secondary-btn" type="button" id="copyTamarind">คัดลอกเลข 📋</button>
-              <button class="secondary-btn" type="button" id="compareTamarind">เทียบอันดับสถิติ 📊</button>
-            </div>
-            <section class="history-card">
-            <div class="card-title-row"><h2>ประวัติรอยขูดล่าสุด</h2><button class="text-btn" type="button" id="clearTamarindHistory">ล้างประวัติ</button></div>
-            <div id="tamarindHistory" class="fortune-history"><p class="empty-state">ยังไม่เคยขูด ต้นมะขามยังเก็บความลับอยู่ค่ะ 🌳</p></div>
+            <div class="bark-paper"><div class="bark-paper-head"><span>ลายแทงใต้เปลือก</span><b id="tamarindMarkName">รอยมดแดง</b></div><p class="tamarind-message" id="tamarindMessage"></p><div class="tamarind-number-main"><small>เลข 2 ตัว</small><strong id="tamarind2">--</strong></div><div class="fortune-number-grid"><div><small>เลข 3 ตัว</small><b id="tamarind3">---</b></div><div><small>เลข 6 หลัก</small><b id="tamarind6">------</b></div></div><div class="fortune-support">เลขกิ่งก้าน: <b id="tamarindSupport">-- · -- · --</b></div><div class="fortune-meta" id="tamarindMeta"></div></div>
+            <div class="fortune-actions"><button class="secondary-btn" type="button" id="copyTamarind">บันทึกชุดนี้</button><button class="secondary-btn" type="button" id="compareTamarind">เทียบอันดับ</button></div>
           </section>
-          </section>
+          <section class="card history-card luck-history-sheet" id="tamarindHistorySheet"><div class="card-title-row"><h2>ประวัติรอยขูดล่าสุด</h2><button class="text-btn" type="button" id="clearTamarindHistory">ล้าง</button></div><div id="tamarindHistory" class="fortune-history"><p class="empty-state">ยังไม่เคยขูด ต้นมะขามยังเก็บความลับอยู่ค่ะ 🌳</p></div></section>
         </div>
       </section>
 
-      
       <section class="page" data-page="about">
         <div class="page-head">
           <button type="button" class="back-btn" data-go="home">‹</button>
@@ -292,7 +235,6 @@
           <section class="card danger-note">
             <h2>คำเตือนจากพิธีกร</h2>
             <p>ซื้อทุกงวดได้ค่ะ แต่ตั้งงบทุกงวดด้วยนะคะ ระวังโดนหวยแดกนะคะ 😌</p>
-            <p>แอปนี้จัดทำเพื่อความบันเทิง ไม่รับรองผลรางวัล โปรดยึดประกาศทางการของสำนักงานสลากกินแบ่งรัฐบาล (GLO) เป็นหลักค่ะ</p>
           </section>
           <section class="card prose small">
             <p>เวอร์ชันแอป: <span id="appVersion">1.5.1</span></p>

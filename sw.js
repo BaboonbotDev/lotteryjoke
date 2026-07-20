@@ -1,5 +1,5 @@
 const CACHE='chan-ja-sue-huay-thuk-nguat-v1.5.1';
-const ASSETS=['./','index.html','styles.css','app.js','manifest.webmanifest','data/lottery.json','data/model.json','assets/hero.webp','assets/splash.webp','assets/icon-192.png','assets/icon-512.png'];
+const ASSETS=['./','index.html','styles.css','app.js','manifest.webmanifest','data/lottery.json','data/model.json','assets/hero.webp','assets/splash.webp','assets/icon-192.png','assets/icon-512.png','assets/siamsee-stage.webp','assets/tamarind-stage.webp'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',event=>event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)))).then(()=>self.clients.claim())));
 self.addEventListener('fetch',event=>{

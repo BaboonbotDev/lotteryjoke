@@ -1,7 +1,7 @@
 {
   "name": "ฉันจะซื้อหวยทุกงวด",
   "short_name": "หวยทุกงวด",
-  "description": "แอปตรวจหวย ปั่นเลข เซียมซี และขูดเลข สไตล์ horoscope anime-moe",
+  "description": "แอปเลขนำโชคสไตล์อนิเมะโมเอะ พร้อมเซียมซีและขูดต้นมะขาม",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#f8f5ff",
